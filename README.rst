@@ -7,7 +7,7 @@ Whampyr
         :target: https://pypi.python.org/pypi/whampyr
 
 .. image:: https://img.shields.io/travis/jeandet/whampyr.svg
-        :target: https://travis-ci.org/jeandet/whampyr
+        :target: https://travis-ci.org/LaboratoryOfPlasmaPhysics/whampyr
 
 .. image:: https://readthedocs.org/projects/whampyr/badge/?version=latest
         :target: https://whampyr.readthedocs.io/en/latest/?badge=latest
