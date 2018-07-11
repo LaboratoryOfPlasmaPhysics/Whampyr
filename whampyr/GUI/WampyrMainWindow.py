@@ -1,4 +1,4 @@
-from PyQt5 import QtGui, QtWidgets
+from .qt import QtWidgets
 
 
 class WampyrMainWindow(QtWidgets.QMainWindow):
