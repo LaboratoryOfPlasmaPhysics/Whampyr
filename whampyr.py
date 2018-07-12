@@ -3,11 +3,11 @@
 import sys
 from whampyr.GUI.qt.QtWidgets import QApplication
 
-from whampyr.GUI.WampyrMainWindow import WampyrMainWindow
+from whampyr.GUI.WhampyrMainWindow import WhampyrMainWindow
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    MainWindow = WampyrMainWindow()
+    MainWindow = WhampyrMainWindow()
     MainWindow.show()
     app.exec_()
