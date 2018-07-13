@@ -20,17 +20,21 @@
 import pytest
 from whampyr.plasma.quantity import Quantity
 from whampyr.plasma.population import Population
+from whampyr.plasma.distributions import MaxwellianDistribution
 from copy import deepcopy
 import jsonpickle
 import astropy.constants as cst
 
 @pytest.fixture
 def simple_ions():
-    p = Population("IONS", charge=Quantity(1.6021766e-19, 'C'), Z=10.,
+    maxwellian = MaxwellianDistribution(density=Quantity(2,"cm^-3"))
+    p = Population("IONS", Z=10.,
                    is_electrons=False,
                    me=Quantity(cst.m_e),
-                   mp=Quantity(cst.m_p))
-    p.set_B(Quantity(100.,'nT'))
+                   mp=Quantity(cst.m_p),
+                   distribution=maxwellian
+                   )
+    p.set_B(Quantity(100., 'nT'))
     return p
 
 
@@ -50,7 +54,8 @@ def test_cant_divide_two_incompatible_populations(simple_ions):
 def test_can_un_normalize_population(simple_ions):
     normalized_pop = simple_ions / simple_ions
     origin = normalized_pop * simple_ions
-    origin = simple_ions * normalized_pop
+    with pytest.raises(TypeError):
+        origin = simple_ions * normalized_pop
 
 
 def test_cant_un_normalize_population_with_wrong_ref_population(simple_ions):

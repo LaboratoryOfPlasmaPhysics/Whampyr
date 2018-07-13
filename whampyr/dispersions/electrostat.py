@@ -2,11 +2,14 @@
 import numpy as np
 
 
-from scipy.special import  ive
+from scipy.special import  iv
 
 from plasmapy.mathematics import plasma_dispersion_func as Z
 from plasmapy.mathematics import plasma_dispersion_func_deriv as Zp
 
+
+def ive(x):
+    iv(x) * np.exp(-x)
 
 
 

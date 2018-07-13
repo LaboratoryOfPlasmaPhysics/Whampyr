@@ -1,6 +1,6 @@
 from .quantity import Quantity
 
-
+from astropy.constants import c
 distributions_dict = {}
 
 
@@ -26,33 +26,40 @@ def f_maxwell(density, vdrift_para, vth_para, vth_perp, vpara, vperp):
 
 @registered_distribution
 class MaxwellianDistribution:
-    def __init__(self, t_para=Quantity(1., 'eV'), t_perp=Quantity(1., 'eV'), density=Quantity(1.,'cm^-3'), vdrift_para=Quantity(1.,'m/s')):
+    def __init__(self, t_para=Quantity(1., 'eV'),
+                 t_perp=Quantity(1., 'eV'), density=Quantity(1.,'cm^-3'), vdrift_para=Quantity(1.,'m/s'),
+                 mass = None):
+
         self.Tpara = t_para
         self.Tperp = t_perp
+        self.mass = mass
         self.density = density
         self.vdrift_para = vdrift_para
+        self.anisotropy = t_perp / t_para
+        self.vth_para = None
+        self.vth_perp = None
 
-    @property
-    def anisotropy(self):
-        Tperp = self.Tperp.converted('eV').value
-        Tpara = self.Tpara.converted('eV').value
-        return Tperp/Tpara
+    def set_mass(self, mass):
+        self.mass = mass
+        if mass is not None:
+            self.vth_para = self._vth_para()
+            self.vth_perp = self._vth_perp()
 
     def normalize(self,B, mass, charge, density):
-        pass
+        self.density = float(self.density / density)
+        self.vdrift_para = float(self.vdrift_para / Quantity(1.*c))
+        self.Tpara = float(self.Tpara / (mass * Quantity(1.*c*c)))
+        self.Tperp = float(self.Tperp / (mass * Quantity(1.*c*c)))
 
     def unnormalize(self,B, mass, charge, density):
-        pass
+        self.density = density * self.density
+        self.vdrift_para = Quantity(1.*c) * self.vdrift_para
+        self.Tpara = (mass * Quantity(1.*c*c)) * self.Tpara
+        self.Tperp = (mass * Quantity(1.*c*c)) * self.Tperp
 
-    @property
-    def vth_para(self):
-        mass = self.mass_si
-        Tpara = self.distribution.Tpara.converted('eV').value
-        return (Tpara / mass)**0.5
+    def _vth_para(self):
+        return (self.Tpara / self.mass)**0.5
 
-    @property
-    def vth_perp(self):
-        mass = self.mass_si
-        Tperp = self.distribution.Tperp.converted('eV').value
-        return (Tperp / mass)**0.5
+    def _vth_perp(self):
+        return (self.Tperp / self.mass)**0.5
 

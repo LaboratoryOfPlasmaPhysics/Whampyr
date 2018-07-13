@@ -23,10 +23,20 @@ class Quantity:
         return """quantity: {value} {unit}""".format(value=self.v, unit=self.u)
 
     def __truediv__(self, other):
-        return Quantity(self.v/other.v,str(u.Unit(self.u) / u.Unit(other.u)))
+        if type(other) is float:
+            return Quantity(self.v / other, str(u.Unit(self.u)))
+        return Quantity(self.v/other.v, str(u.Unit(self.u) / u.Unit(other.u)))
 
     def __mul__(self, other):
+        if type(other) is float:
+            return Quantity(self.v * other, str(u.Unit(self.u)))
         return Quantity(self.v * other.v, str(u.Unit(self.u) * u.Unit(other.u)))
 
     def __eq__(self, other):
         return self.value() == other.value()
+
+    def __float__(self):
+        return float(self.value())
+
+    def __pow__(self, power, modulo=None):
+        return Quantity(self.value().__pow__(power))

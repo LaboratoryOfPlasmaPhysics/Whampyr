@@ -32,6 +32,7 @@ class Plasma:
         for pop_name in self.populations.keys():
             self.populations[pop_name] = self.populations[pop_name] / ref_population
         self.set_ref_population(ref_population)
+
         return self
 
     def unnormalize(self):

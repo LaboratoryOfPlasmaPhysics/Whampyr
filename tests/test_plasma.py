@@ -2,25 +2,30 @@ import pytest
 from whampyr.plasma.quantity import Quantity
 from whampyr.plasma.population import Population
 from whampyr.plasma.plasma import Plasma
+from whampyr.plasma.distributions import MaxwellianDistribution
 from copy import deepcopy
 import astropy.constants as cst
 import jsonpickle
 
 @pytest.fixture
 def simple_ion():
-    p = Population("IONS", charge=Quantity(1.6021766e-19, 'C'), Z=10.,
+    maxwellian = MaxwellianDistribution(density=Quantity(2, "cm^-3"))
+    p = Population("IONS", Z=10.,
                    is_electrons=False,
                    me=Quantity(cst.m_e),
-                   mp=Quantity(cst.m_p))
+                   mp=Quantity(cst.m_p),
+                   distribution=maxwellian)
     return p
 
 @pytest.fixture
 def simple_electron():
-    p = Population("Electrons", charge=Quantity(1.6021766e-19, 'C'),
+    maxwellian = MaxwellianDistribution(density=Quantity(2, "cm^-3"))
+    p = Population("Electrons",
                    Z=-1.,
                    is_electrons=True,
                    me=Quantity(cst.m_e),
-                   mp=Quantity(cst.m_p) )
+                   mp=Quantity(cst.m_p),
+                   distribution=maxwellian)
     return p
 
 @pytest.fixture
@@ -75,3 +80,7 @@ def test_can_iterate_populations_in_a_plasma(simple_plasma):
     pops = [p for p in simple_plasma]
     assert len(pops) == len(simple_plasma)
     assert pops[0].name != pops[1].name
+
+
+def test_can_get_electrons(simple_plasma):
+    assert len(simple_plasma.electrons()) == 1
