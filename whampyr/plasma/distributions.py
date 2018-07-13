@@ -32,6 +32,7 @@ class MaxwellianDistribution:
         self.density = density
         self.vdrift_para = vdrift_para
 
+    @property
     def anisotropy(self):
         Tperp = self.Tperp.converted('eV').value
         Tpara = self.Tpara.converted('eV').value

@@ -2,6 +2,7 @@ from .quantity import Quantity
 from .population import Population
 from copy import deepcopy
 import astropy.constants as cst
+import astropy.units as u
 
 
 class Plasma:
@@ -40,7 +41,11 @@ class Plasma:
         return self
 
     def electrons(self):
-        return []
+        c = 1.
+        if self.ref_population is not None:
+            c = self.ref_population.Z
+        electrons = [pop for pop in self.populations.values() if pop.is_electrons]
+        return electrons
 
     def change(self, source_reference, destination_reference):
         self.B = (self.B * source_reference.B) / destination_reference.B

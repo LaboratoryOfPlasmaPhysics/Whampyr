@@ -22,12 +22,14 @@ from whampyr.plasma.quantity import Quantity
 from whampyr.plasma.population import Population
 from copy import deepcopy
 import jsonpickle
+import astropy.constants as cst
 
 @pytest.fixture
 def simple_ions():
-    p = Population("IONS")
-    p.charge = Quantity(1.6021766e-19, 'C')
-    p.mass = Quantity(1., 'u')
+    p = Population("IONS", charge=Quantity(1.6021766e-19, 'C'), Z=10.,
+                   is_electrons=False,
+                   me=Quantity(cst.m_e),
+                   mp=Quantity(cst.m_p))
     p.set_B(Quantity(100.,'nT'))
     return p
 
