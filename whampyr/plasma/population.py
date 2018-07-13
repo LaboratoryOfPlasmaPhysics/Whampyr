@@ -4,6 +4,7 @@ from astropy import units as u
 from .quantity import Quantity
 from .distributions import distributions_dict
 from copy import deepcopy
+import astropy.constants as cst
 
 
 def wc(charge, B , mass):
@@ -11,6 +12,10 @@ def wc(charge, B , mass):
 
 
 def wp(density, charge, mass):
+    return np.sqrt(density * charge**2 / mass)
+
+
+def wp_ref(density, charge, mass):
     return np.sqrt(density * charge**2 / (mass*epsilon_0))
 
 
@@ -19,10 +24,15 @@ def rho(mass, vth, charge, B):
 
 
 class Population:
-    def __init__(self, name, charge=Quantity(1.,'e'), mass=Quantity(1.,'u'), *args, **kwargs):
+    def __init__(self, name, charge=Quantity(1.6021766e-19, 'C'), Z=Quantity(1.,''),
+                 me=Quantity(cst.m_e),
+                 mp=None
+                 , *args, **kwargs):
         self.name = name
+        self.me = me
+        self.mp = mp
         self.charge = charge
-        self.mass = mass
+        self.Z = Z
         self.distribution = distributions_dict["Maxwellian"]()
         self.B = None
 

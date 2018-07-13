@@ -3,8 +3,12 @@ from astropy import units as u
 
 class Quantity:
     def __init__(self, value=0., unit=""):
-        self.u = str(unit)
-        self.v = value
+        if hasattr(value,'value') and hasattr(value,'unit'):
+            self.u = str(value.unit)
+            self.v = value.value
+        else:
+            self.u = str(unit)
+            self.v = value
 
     def value(self):
         return self.v * u.Unit(self.u)

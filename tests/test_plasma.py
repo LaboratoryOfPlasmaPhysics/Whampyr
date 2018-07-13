@@ -68,3 +68,9 @@ def test_can_normalize_and_unnormalize_a_plasma(simple_plasma):
     assert normalized_plasma.populations['Electrons'].B.value() == electrons.B.value()
     assert normalized_plasma.populations['Electrons'].charge.value() == electrons.charge.value()
     assert normalized_plasma.populations['Electrons'].mass.value() == electrons.mass.value()
+
+
+def test_can_iterate_populations_in_a_plasma(simple_plasma):
+    pops = [p for p in simple_plasma]
+    assert len(pops) == len(simple_plasma)
+    assert pops[0].name != pops[1].name
