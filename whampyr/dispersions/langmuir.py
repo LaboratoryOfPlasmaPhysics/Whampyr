@@ -22,14 +22,14 @@ class Lamguir_Mode():
         kperp = kwargs['kperp']
         kpara = kwargs['kpara']
 
-        value = 0
+        value = np.zeros_like(w)
         for elec in self.plasma.electrons():
-            eta = kperp ** 2 * elec.wp() ** 2 / (2 * elec.wc() ** 2)
+            eta = kperp ** 2 * elec.wp() ** 2 / (2 * elec.wc ** 2)
             xi = w / kpara
             k2 = kperp ** 2 + kpara ** 2
-            value = value + 1 - 1 / k2 * ive(0, eta) * Zp(xi)
+            value = value - 1 / k2 * ive(0, eta) * Zp(xi)
 
-        return value
+        return 1 - value
 
 
     def dispersion_function_prime(self, w, **kwargs):
@@ -39,13 +39,15 @@ class Lamguir_Mode():
         kpara = kwargs['kpara']
 
 
-        value = 0
+        value = np.zeros_like(w)
         for elec in self.plasma.electrons():
-            eta = kperp ** 2. * elec.pulsation ** 2 / (2. * elec.w_c ** 2)
+            eta = kperp ** 2. * elec.wp() ** 2 / (2. * elec.wc ** 2)
 
             xi = w / kpara
             k2 = kperp ** 2 + kpara ** 2
 
-            value = value + 2. / k2 * ive(0, eta) * (Z(xi) + xi * Zp(xi))
+            zz = Z(xi)
+            zp = -2*(1 + xi*zz)
+            value = value + 2. / k2 * ive(0, eta) * (zz + xi * zp)
 
         return value / kpara

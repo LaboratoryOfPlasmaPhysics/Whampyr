@@ -37,14 +37,18 @@ class electrostatic():
 
         eta = kperp ** 2 * vth_perp ** 2 / (2 * wc ** 2)
 
-        def xi(l = 0):
-            return (w - l * wc) / (kpara * vth_para)
+        l = self.l_vect * wc
+        xi = w.reshape(1, len(w)) - l.reshape(len(l), 1)
+        xi = xi / (kpara * vth_para) # shape (nl, nw)
 
-        def factor(l):
-            return wp ** 2 * ive(l, eta) / (k2 * vth_perp ** 2)
+        factor = wp ** 2 * ive(self.l_vect, eta) / (k2 * vth_perp ** 2) # shape (l)
+        factor = np.diag(factor)
 
-        return -sum([factor(l) * (anisotropy * Zp(xi(l)) -
-                             2 * l * wc / (kpara * vth_para) * Z(xi(l))) for l in self.l_vect])
+        zz = Z(xi)
+        zp = -2*(1 + xi * zz)
+
+        return -np.sum(factor @ (anisotropy * zp) - 2 / (kpara*vth_para) * (np.diag(l) @ zz), axis=0)
+
 
 
 
@@ -73,16 +77,19 @@ class electrostatic():
 
         eta = kperp ** 2 * vth_perp ** 2 / (2 * wc ** 2)
 
-        def xi(l=0):
-            return (w - l * wc) / (kpara * vth_para)
+        l = self.l_vect * wc
+        xi = w.reshape(1, len(w)) - l.reshape(len(l), 1)
+        xi = xi / (kpara * vth_para) # shape (nw,l)
 
-        def factor1(l):
-            return wp ** 2 * ive(l, eta) / (k2 * vth_perp ** 2)
+        factor1 = wp ** 2 * ive(l, eta) / (k2 * vth_perp ** 2)
+        factor1 = np.diag(factor1)
 
-        def factor2(l):
-            return Zp(xi(l)) * (anisotropy * xi(l) + l * wc / (kpara * vth_para)) + anisotropy * Z(xi(l))
+        zz = Z(xi)
+        zp = -2*(1 + xi * zz)
 
-        return 2 / (kpara * vth_para) * sum([factor1(l) * factor2(l) for l in self.l_vect])
+        factor2 = (anisotropy * xi(l)) * zp + (np.diag(l) * wc / (kpara * vth_para)) @ zp + anisotropy * zz
+
+        return 2 / (kpara * vth_para) * np.sum(factor1 @ factor2, axis = 0)
 
 
 
