@@ -46,7 +46,7 @@ def test_can_normalize_and_unnormalize_a_plasma(simple_plasma):
     assert normalized_plasma.populations['IONS'].charge.u == ''
     assert normalized_plasma.populations['IONS'].mass.u == ''
 
-    normalized_plasma.change(electrons,ions)
+    normalized_plasma.change(ions)
 
     assert normalized_plasma.populations['IONS'].B.value() == 1.
     assert normalized_plasma.populations['IONS'].charge.value() == 1.
@@ -60,10 +60,7 @@ def test_can_normalize_and_unnormalize_a_plasma(simple_plasma):
     assert normalized_plasma.populations['IONS'].charge.u == ''
     assert normalized_plasma.populations['IONS'].mass.u == ''
 
-    with pytest.raises(ValueError):
-        normalized_plasma.unnormalize(electrons)
-
-    normalized_plasma.unnormalize(ions)
+    normalized_plasma.unnormalize()
 
     assert normalized_plasma.populations['IONS'].B.value() == ions.B.value()
     assert normalized_plasma.populations['IONS'].charge.value() == ions.charge.value()

@@ -34,10 +34,11 @@ class Plasma:
         self.set_ref_population(ref_population)
         return self
 
-    def unnormalize(self, ref_population):
-        self.B *= ref_population.B
+    def unnormalize(self):
+        self.B *= self.ref_population.B
         for pop_name in self.populations.keys():
-            self.populations[pop_name] = self.populations[pop_name] * ref_population
+            self.populations[pop_name] = self.populations[pop_name] * self.ref_population
+        self.ref_population = None
         return self
 
     def electrons(self):
@@ -47,10 +48,13 @@ class Plasma:
         electrons = [pop for pop in self.populations.values() if pop.is_electrons]
         return electrons
 
-    def change(self, source_reference, destination_reference):
-        self.B = (self.B * source_reference.B) / destination_reference.B
+    def change(self, new_reference):
+        if self.ref_population is None:
+            return self.normalize(new_reference)
+        self.B = (self.B * self.ref_population.B) / new_reference.B
         for pop_name in self.populations.keys():
-            self.populations[pop_name] = (self.populations[pop_name] * source_reference) / destination_reference
+            self.populations[pop_name] = (self.populations[pop_name] * self.ref_population) / new_reference
+        self.ref_population = new_reference
         return self
 
     def __repr__(self):
