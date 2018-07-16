@@ -31,9 +31,9 @@ class Lamguir_Mode():
             wp = float(elec.wp)
             wc = float(elec.wc)
             eta = kperp ** 2 * wp ** 2 / (2 * wc ** 2)
-            xi = w / kpara
+            xi = w / (kpara*elec.distribution.vth_para)
             k2 = kperp ** 2 + kpara ** 2
-            value = value + 1 / k2 * ive(0, eta) * Zp(xi)
+            value = value + elec.wp**2 / (k2*elec.distribution.vth_para**2) * ive(0, eta) * Zp(xi)
 
         return 1 - value
 
@@ -51,11 +51,11 @@ class Lamguir_Mode():
             wc = float(elec.wc)
 
             eta = kperp ** 2. * wp ** 2 / (2. * wc ** 2)
-            xi = w / kpara
+            xi = w / (kpara * elec.distribution.vth_para)
             k2 = kperp ** 2 + kpara ** 2
 
             zz = Z(xi)
             zp = -2*(1 + xi*zz)
-            value = value + 2. / k2 * ive(0, eta) * (zz + xi * zp)
+            value = value + 2. / (k2 *elec.distribution.vth_para**2) * ive(0, eta) * (zz + xi * zp)
 
         return value / kpara
