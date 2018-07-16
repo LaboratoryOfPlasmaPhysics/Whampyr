@@ -57,9 +57,11 @@ class Population:
         if hasattr(self, '__ref_pop__'):
             self.wc = float(wc(self.charge.value(), self.B.value() , self.mass.value()).value)
             self.wp = float(wp(self.distribution.density, self.charge.value(), self.mass.value()).value)
+            self.distribution.set_mass(float(self.mass))
         else:
             self.wc = Quantity(wc(self.charge.value(), self.B.value(), self.mass.value()))
             self.wp = Quantity(wp(self.distribution.density.value(), self.charge.value(), self.mass.value()))
+            self.distribution.set_mass(self.mass)
 
     def set_B(self, B):
         self.B = B

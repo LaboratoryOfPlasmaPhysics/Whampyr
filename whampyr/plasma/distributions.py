@@ -50,12 +50,18 @@ class MaxwellianDistribution:
         self.vdrift_para = float(self.vdrift_para / Quantity(1.*c))
         self.Tpara = float(self.Tpara / (mass * Quantity(1.*c*c)))
         self.Tperp = float(self.Tperp / (mass * Quantity(1.*c*c)))
+        self.mass = float(self.mass/mass)
+        self.vth_perp = self._vth_para()
+        self.vth_para = self._vth_para()
 
     def unnormalize(self,B, mass, charge, density):
         self.density = density * self.density
         self.vdrift_para = Quantity(1.*c) * self.vdrift_para
         self.Tpara = (mass * Quantity(1.*c*c)) * self.Tpara
         self.Tperp = (mass * Quantity(1.*c*c)) * self.Tperp
+        self.mass = mass *  self.mass
+        self.vth_perp = self._vth_perp()
+        self.vth_para = self._vth_para()
 
     def _vth_para(self):
         return (self.Tpara / self.mass)**0.5
