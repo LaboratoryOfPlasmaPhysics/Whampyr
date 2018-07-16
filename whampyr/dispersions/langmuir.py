@@ -1,13 +1,9 @@
 
 
 
-from scipy.special import  iv
-import numpy as np
-from plasmapy.mathematics import plasma_dispersion_func as Z
-from plasmapy.mathematics import plasma_dispersion_func_deriv as Zp
 
-def ive(n, x):
-    return iv(n, x) * np.exp(-x)
+import numpy as np
+from ..utils import ive, Z
 
 
 
@@ -33,7 +29,9 @@ class Lamguir_Mode():
             eta = kperp ** 2 * wp ** 2 / (2 * wc ** 2)
             xi = w / (kpara*elec.distribution.vth_para)
             k2 = kperp ** 2 + kpara ** 2
-            value = value + elec.wp**2 / (k2*elec.distribution.vth_para**2) * ive(0, eta) * Zp(xi)
+            zz = Z(xi)
+            zp = -2*(1+xi*zz)
+            value = value + elec.wp**2 / (k2*elec.distribution.vth_para**2) * ive(0, eta) * zp
 
         return 1 - value
 
@@ -58,4 +56,4 @@ class Lamguir_Mode():
             zp = -2*(1 + xi*zz)
             value = value + 2. / (k2 *elec.distribution.vth_para**2) * ive(0, eta) * (zz + xi * zp)
 
-        return value / kpara
+        return value / (kpara*elec.distribution.vth_para)

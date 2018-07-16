@@ -5,3 +5,8 @@
 __author__ = """Alexis Jeandet"""
 __email__ = 'alexis.jeandet@lpp.polytechnique.fr'
 __version__ = '0.1.0'
+
+
+from .whampyr import Whampyr
+
+__ALL__ = ['Whampyr']
