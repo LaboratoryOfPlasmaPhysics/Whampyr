@@ -8,7 +8,7 @@ class electrostatic():
     def __init__(self, plasma):
         self.plasma = plasma
         self.B = plasma.B
-        self.N = 0  # todo change in a smart way
+        self.N = 10  # todo change in a smart way
         self.l_vect = np.linspace(-self.N, self.N, 1 + 2 * self.N)
 
     def contrib(self, population, w, **kwargs):
@@ -95,6 +95,6 @@ class electrostatic():
 
     def dispersion_function_prime(self, w, **kwargs):
         """equation 10.105 from Wolfram and co"""
-        return sum([self.contrib_prim(pop, w, **kwargs) for pop in self.plasma if pop.is_electrons])
+        return sum([self.contrib_prim(pop, w, **kwargs) for pop in self.plasma])
 
 
